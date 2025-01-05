@@ -115,6 +115,45 @@
             border: 4px solid var(--primary);
         }
 
+        .service-card {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover {
+            background: #2d3748;
+        }
+        
+        .service-card .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .service-card.expanded .chevron-icon {
+            transform: rotate(180deg);
+        }
+        
+        .service-content {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card.expanded .service-content {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+        
+        .hint-text {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            margin-top: 0.25rem;
+        }
+
         .categories-scroll {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -179,7 +218,7 @@
                 <!-- Cart items will be inserted here -->
             </div>
             <button id="checkout-btn" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg hidden">
-                Contact for Price
+                Buy on WhatsApp
             </button>
         </div>
     </div>
@@ -273,6 +312,15 @@
     </div>
 </div>
 
+<!-- Services Section -->
+<div class="px-4 py-6">
+    <h2 class="text-lg font-semibold mb-4">Our Services</h2>
+    <div class="grid grid-cols-1 gap-4" id="services-container">
+        <!-- Services cards will be inserted here by JavaScript -->
+    </div>
+</div>
+
+
     <!-- Categories -->
     <div class="px-4">
         <h2 class="text-lg font-semibold mb-4">Categories</h2>
@@ -285,7 +333,7 @@
     </div>
 
     <!-- Products Grid -->
-    <div class="px-8 py-4">
+    <div class="px-4 py-6">
             <h2 class="text-lg font-semibold mb-4">Best Selling Products</h2>
         <div class="grid grid-cols-1  gap-10" id="products-container">
             <!-- Products will be inserted here by JavaScript -->
@@ -507,7 +555,7 @@
                 mrp: "",
                 description: "",
                 flavors: ["ORANGE", "COOKIES", "MANGO", "ALMONDS"],
-                images: ["null"]
+                images: ["Assets/Storm/one.png","Assets/Storm/two.png"]
             },
             {
                 name: "STROM PROTEIN BAR 20 GM",
@@ -516,7 +564,7 @@
                 mrp: "",
                 description: "",
                 flavors: ["BERRY", "COOKIES", "MANGO", "ALMONDS"],
-                images: [""]
+                images: ["Assets/Storm/oone.png","Assets/Storm/twwo.png"]
             },
             {
                 name: "Fast N Up Omega",
@@ -546,13 +594,13 @@
                 images: null
             },
             {
-                name: "WELLEX PEANUT BUTTER",
+                name: "WELLX PEANUT BUTTER",
                 category: "peanut butter",
                 price: "",
                 mrp: "",
                 description: null,
                 flavors: ["MANGO", "WHITE CHOCOLATE", "RABDI", "CHOCOLATE"],
-                images: null
+                images: ["Assets/WellX/one.png","Assets/WellX/two.png","Assets/WellX/three.png","Assets/WellX/four.png"]
             },
         ];
 
@@ -607,7 +655,7 @@
                         </div>
                     ` : ''}
                     <div class="grid grid-cols-2 gap-2">
-                        <a href="https://chat.whatsapp.com/BVuAb1XsB3QGFx2U6KJH2q?text=${createWhatsAppMessage(product)}" 
+                        <a href="https://wa.me/918871718119?text=${createWhatsAppMessage(product)}" 
                            target="_blank"
                            class="block w-full bg-green-600 hover:bg-green-700 px-3 py-2 rounded-lg text-sm text-center">
                             Contact for Price
@@ -743,7 +791,7 @@ function handleCheckout() {
     message += "\nPlease provide payment and delivery details.";
     
     // Open WhatsApp with the message
-    window.open(`https://chat.whatsapp.com/BVuAb1XsB3QGFx2U6KJH2q?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(`https://wa.me/918871718119?${encodeURIComponent(message)}`, '_blank');
 }
 
 // Initialize cart functionality when DOM is loaded
@@ -794,6 +842,106 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize cart UI
     updateCartUI();
+});
+
+// Services data and functionality
+const services = [
+    {
+        id: 1,
+        name: "Workout Plan",
+        price: "2,000",
+        description: "Get a personalized workout routine designed specifically for your fitness goals. Our expert trainers will create a detailed plan including exercise selection, sets, reps, and progression strategy. Includes form guidance and weekly adjustments to ensure optimal results.",
+        features: [
+            "Customized exercise selection",
+            "Progressive overload strategy",
+            "Weekly workout schedule",
+            "Form guidance videos"
+        ]
+    },
+    {
+        id: 2,
+        name: "Diet Plan",
+        price: "2,000",
+        description: "Receive a customized nutrition plan that aligns with your fitness goals. Our nutrition experts will calculate your exact caloric needs and macro splits, create a meal plan with food options you enjoy, and provide supplement recommendations.",
+        features: [
+            "Personalized macro calculations",
+            "Flexible meal options",
+            "Supplement guidance",
+            "Meal timing strategy"
+        ]
+    },
+    {
+        id: 3,
+        name: "Complete Package",
+        price: "3,000",
+        description: "Get the best results with our comprehensive package combining both workout and diet plans. This complete solution ensures perfect alignment between your training and nutrition, maximizing your progress and helping you achieve your goals faster.",
+        features: [
+            "Complete workout plan",
+            "Full nutrition strategy",
+            "Monthly consultations",
+            "Priority support"
+        ]
+    }
+];
+
+function createServiceCard(service) {
+    const card = document.createElement('div');
+    card.className = 'service-card';
+    
+    const createWhatsAppMessage = (serviceName) => {
+        return encodeURIComponent(`Hi! I'm interested in the ${serviceName}. Could you please provide more details?`);
+    };
+    
+    card.innerHTML = `
+        <div class="p-4">
+            <div class="flex justify-between items-center">
+                <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-white font-semibold">${service.name}</h3>
+                        <span class="text-indigo-400 font-bold">₹${service.price}</span>
+                    </div>
+                    <p class="hint-text">Click to see details</p>
+                </div>
+                <svg class="chevron-icon ml-4 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+            <div class="service-content">
+                <p class="text-gray-300 text-sm mb-4">${service.description}</p>
+                <div class="space-y-2 mb-4">
+                    ${service.features.map(feature => `
+                        <div class="flex items-center text-sm text-gray-300">
+                            <svg class="w-4 h-4 mr-2 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>${feature}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <a href="https://wa.me/918871718119?text=${createWhatsAppMessage(service.name)}" 
+                   class="block w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg text-center text-sm transition duration-200">
+                    Contact for Details
+                </a>
+            </div>
+        </div>
+    `;
+
+    // Add click handler for expansion
+    card.addEventListener('click', (e) => {
+        // Don't trigger if clicking the WhatsApp button
+        if (e.target.closest('a')) return;
+        
+        // Toggle expanded class
+        card.classList.toggle('expanded');
+    });
+
+    return card;
+}
+
+// Initialize services
+const servicesContainer = document.getElementById('services-container');
+services.forEach(service => {
+    servicesContainer.appendChild(createServiceCard(service));
 });
 
             
