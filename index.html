@@ -312,6 +312,25 @@
     </div>
 </div>
 
+
+<div id="image-modal" class="fixed inset-0 bg-black hidden z-50 flex items-center justify-center">
+    <div class="w-full h-full">
+        <div class="swiper fullscreen-swiper h-full">
+            <div class="swiper-wrapper" id="fullscreen-wrapper">
+                <!-- Slides will be inserted here -->
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+        <button id="close-fullscreen" class="absolute top-4 right-4 z-50 bg-white rounded-full p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="black">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+</div>
+
 <!-- Services Section -->
 <div class="px-4 py-6">
     <h2 class="text-lg font-semibold mb-4">Our Services</h2>
@@ -1017,7 +1036,130 @@ services.forEach(service => {
     servicesContainer.appendChild(createServiceCard(service));
 });
 
-            
-    </script>
+
+//Full Screen image
+
+
+function adjustLayoutForScreenSize() {
+    const productsContainer = document.getElementById('products-container');
+    if (window.innerWidth >= 768) {
+        productsContainer.className = 'grid grid-cols-2 gap-6 px-4 py-6';
+    }
+    if (window.innerWidth >= 1024) {
+        productsContainer.className = 'grid grid-cols-3 gap-6 px-4 py-6';
+    }
+    if (window.innerWidth >= 1280) {
+        productsContainer.className = 'grid grid-cols-4 gap-6 px-4 py-6';
+    }
+}
+
+// Initialize fullscreen swiper
+document.addEventListener('DOMContentLoaded', () => {
+    const imageModal = document.getElementById('image-modal');
+    const closeFullscreen = document.getElementById('close-fullscreen');
+    let fullscreenSwiper = null;
+
+    // Initialize fullscreen swiper for each product card
+    document.querySelectorAll('.product-card').forEach(card => {
+        const productSwiper = card.querySelector('.product-swiper');
+        const images = card.querySelectorAll('.swiper-slide img');
+        
+        images.forEach((img, index) => {
+            img.style.cursor = 'pointer';
+            img.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Clear and populate fullscreen wrapper
+                const wrapper = document.getElementById('fullscreen-wrapper');
+                wrapper.innerHTML = '';
+                images.forEach(productImg => {
+                    const slide = document.createElement('div');
+                    slide.className = 'swiper-slide flex items-center justify-center';
+                    slide.innerHTML = `<img src="${productImg.src}" class="max-h-screen max-w-full object-contain" alt="Fullscreen view">`;
+                    wrapper.appendChild(slide);
+                });
+
+                // Initialize or update fullscreen swiper
+                if (fullscreenSwiper) {
+                    fullscreenSwiper.destroy();
+                }
+                
+                fullscreenSwiper = new Swiper('.fullscreen-swiper', {
+                    initialSlide: index,
+                    slidesPerView: 1,
+                    spaceBetween: 0,
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    keyboard: {
+                        enabled: true,
+                    },
+                });
+
+                imageModal.classList.remove('hidden');
+            });
+        });
+    });
+
+    // Close modal handlers
+    closeFullscreen.addEventListener('click', () => {
+        imageModal.classList.add('hidden');
+    });
+
+    imageModal.addEventListener('click', (e) => {
+        if (e.target === imageModal) {
+            imageModal.classList.add('hidden');
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            imageModal.classList.add('hidden');
+        }
+    });
+
+    adjustLayoutForScreenSize();
+});
+
+// Update product card styles for better responsiveness
+document.querySelectorAll('.product-card').forEach(card => {
+    card.querySelector('.product-swiper img').style.height = '300px';
+});
+
+// Make brand swiper responsive
+const brandSwiper = new Swiper('.brand-swiper', {
+    slidesPerView: 2,
+    spaceBetween: 8,
+    loop: true,
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
+    autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+    },
+    breakpoints: {
+        640: {
+            slidesPerView: 3,
+            spaceBetween: 12,
+        },
+        768: {
+            slidesPerView: 4,
+            spaceBetween: 16,
+        },
+        1024: {
+            slidesPerView: 5,
+            spaceBetween: 20,
+        },
+    },
+});
+</script>
+
 </body>
 </html>
