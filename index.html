@@ -247,7 +247,7 @@
     </div>
 
     <!-- Brand Banners -->  
-<div class="px-4 py-6">
+<div class="px-3 py-5">
     <h2 class="text-lg font-semibold mb-4">Our Brands</h2>
     <div class="swiper brand-swiper">
         <div class="swiper-wrapper">
@@ -371,7 +371,7 @@
         // Initialize Swiper for brand banners
         new Swiper('.brand-swiper', {
             slidesPerView: 3, 
-            spaceBetween: 16,
+            spaceBetween: 4,
             loop: true,
             pagination: {
                 el: '.swiper-pagination',
@@ -1140,8 +1140,8 @@ document.querySelectorAll('.product-card').forEach(card => {
 
 // Make brand swiper responsive
 const brandSwiper = new Swiper('.brand-swiper', {
-    slidesPerView: 2,
-    spaceBetween: 8,
+    slidesPerView: 3,
+    spaceBetween: 16,
     loop: true,
     pagination: {
         el: '.swiper-pagination',
